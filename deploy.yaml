@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ko-demo
+spec:
+  selector:
+    matchLabels:
+      app: ko-demo
+  template:
+    metadata:
+      labels:
+        app: ko-demo
+    spec:
+      containers:
+      - name: app
+        image: ko://test.cwc/ko-demo 

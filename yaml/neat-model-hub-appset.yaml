@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: model-hub-appset
+  namespace: argocd
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchLabels:
+          model-hub-appset: cluster
+  goTemplate: true
+  goTemplateOptions:
+  - missingkey=error
+  syncPolicy:
+    applicationsSync: create-delete
+  template:
+    metadata:
+      labels:
+        app: model-hub
+        cluster: '{{.name}}'
+      name: model-hub-{{.name | trimPrefix "cluster-" | replace "." "-"}}
+    spec:
+      destination:
+        namespace: default
+        server: '{{.server}}'
+      ignoreDifferences:
+      - jsonPointers:
+        - /spec/source/helm/parameters
+        - /spec/source/helm/valuesObject
+        kind: Application
+      info:
+      - name: api
+        value: https://codeup.aliyun.com/truthai/backend/bowei/model-hub.git
+      - name: admin
+        value: https://codeup.aliyun.com/truthai/frontend/bowei/model-hub.git
+      project: default
+      source:
+        helm:
+          valueFiles:
+          - values.yaml
+          valuesObject:
+            fullnameOverride: model-hub-{{.name | trimPrefix "cluster-" | replace
+              "." "-"}}
+        path: .
+        repoURL: https://codeup.aliyun.com/truthai/platform/helm-chart/model-hub.git
+        targetRevision: feat/test-deploy
+      syncPolicy:
+        automated:
+          selfHeal: true
