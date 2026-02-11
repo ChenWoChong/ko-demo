@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+# 给所有资源加后缀
+nameSuffix: -dev
+
+# 统一加标签
+commonLabels:
+  env: development

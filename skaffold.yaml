@@ -5,7 +5,7 @@ metadata:
 build:
   # 1. 告诉 Skaffold 我们用 ko 来构建
   artifacts:
-  - image: test.cwc/ko-demo # 这里的名字要和你 deploy.yaml 里的 image 一致
+  - image: ko-demo # 这里的名字要和你 deploy.yaml 里的 image 一致
     ko:
       fromImage: cgr.dev/chainguard/static:latest
     sync:
@@ -15,9 +15,21 @@ build:
       - 'kodata/**/*'
   local:
     push: false # 因为是 OrbStack，直接 load 进本地 Docker，不需要 push 到远程仓库
-deploy:
-  # 2. 告诉 Skaffold 我们用 kubectl/kustomize 来部署
-  kubectl: {}
 manifests:
-  rawYaml:
-  - deploy.yaml
+  # 使用 Kustomize 渲染 Dev 环境
+  kustomize:
+    paths:
+    - k8s/overlays/dev
+
+deploy:
+  kubectl: {}
+
+profiles:
+- name: prod
+  build:
+    local:
+      push: true # 生产环境推送镜像
+  manifests:
+    kustomize:
+      paths:
+      - k8s/overlays/prod
