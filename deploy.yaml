@@ -13,4 +13,4 @@ spec:
     spec:
       containers:
       - name: app
-        image: ko://test.cwc/ko-demo 
+        image: ko://test.cwc/ko-demo

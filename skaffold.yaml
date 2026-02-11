@@ -1,0 +1,23 @@
+apiVersion: skaffold/v4beta1
+kind: Config
+metadata:
+  name: ko-demo
+build:
+  # 1. 告诉 Skaffold 我们用 ko 来构建
+  artifacts:
+  - image: test.cwc/ko-demo # 这里的名字要和你 deploy.yaml 里的 image 一致
+    ko:
+      fromImage: cgr.dev/chainguard/static:latest
+    sync:
+      infer:
+      # 告诉 Skaffold：如果是这个目录下的文件变了，不要重编镜像，
+      # 直接把文件 copy 进容器里
+      - 'kodata/**/*'
+  local:
+    push: false # 因为是 OrbStack，直接 load 进本地 Docker，不需要 push 到远程仓库
+deploy:
+  # 2. 告诉 Skaffold 我们用 kubectl/kustomize 来部署
+  kubectl: {}
+manifests:
+  rawYaml:
+  - deploy.yaml
