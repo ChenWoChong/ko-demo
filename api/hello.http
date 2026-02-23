@@ -1,0 +1,41 @@
+# REST Client 测试文件
+#
+# 环境变量配置:
+# - JetBrains IDE: 自动读取 http-client.env.json，顶部工具栏切换环境
+# - VSCode: 使用下方 @ 定义的默认变量（如需切换环境，手动修改 baseUrl 值）
+
+@baseUrl = http://localhost:30080
+
+### 获取根路径 - 测试服务健康状态
+GET {{baseUrl}}/
+Accept: */*
+
+###
+
+### 获取根路径 - 使用 JSON Accept
+GET {{baseUrl}}/
+Accept: application/json
+
+###
+
+### 获取根路径 - 带自定义 User-Agent
+GET {{baseUrl}}/
+User-Agent: ko-demo-test-client/1.0
+Accept: text/plain
+
+###
+
+### 发送 POST 请求（当前 handler 只响应 GET，但可以测试）
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+  "message": "test message"
+}
+
+###
+
+### 发送带有环境变量模拟的请求
+# 注意：POD_NAME 需要在服务端环境变量中设置
+GET {{baseUrl}}/
+X-Test-Environment: dev

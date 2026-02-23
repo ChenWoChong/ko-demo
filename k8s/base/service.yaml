@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ko-demo
+  labels:
+    app: ko-demo
+spec:
+  type: NodePort
+  selector:
+    app: ko-demo
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+    # NodePort 端口范围: 30000-32767
+    # 如果不指定，会自动分配
+    nodePort: 30080
